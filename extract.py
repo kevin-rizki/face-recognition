@@ -1,52 +1,44 @@
+# Import necessary modules
 import cv2
 import numpy as np
 import scipy
+from scipy.misc import imread
+import cPickle as pickle
 import random
 import os
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 
-# Wrote using jupyter, changed the working directory
-# os.chdir('F:/Docs/Kuliah/AlGeo/Tubes Algeo')
-
-# Getting images
-def TraverseImages(root_path='./PINS'):
-    for dir_name, sub_dir_list, file_list in os.walk(root_path):
-        print(file_list)
-
-# Image path generator
-def ImagePath(imgdir):
-    temp = './PINS/pins_Aaron Paul/%s' %(imgdir)
-    return temp
-
-# Image Matcher
-def ImageMatcher(img_path1, img_path2):
+def extractFeatures(imgPath, vectorSize = 32):
+    # Get image data from P A T H
+    image = imread(imgPath, mode = "RGB")
+    descriptors = None
+    # Extract 
     try:
-        # Load image
-        img1 = cv2.imread(img_path1)
-        img2 = cv2.imread(img_path2)
-        
-        # We don't need RGB since we're only detecting a single face per image. Result is a hued grayscale image
-        img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-        
-        # KAZE descriptor
-        kaze = cv2.KAZE_create()
-        keypt1, desc1 = kaze.detectAndCompute(img1_gray, None)
-        keypt2, desc2 = kaze.detectAndCompute(img2_gray, None)
-        
-        # desc1 = np.uint8(desc1)
-        # desc2 = np.uint8(desc2)
-        
-        # bf = cv2.BFMatcher(cv2.NORM_HAMMLING)
-        bf = cv2.BFMatcher(cv2.NORM_L1)
-        matches = bf.knnMatch(desc1, desc2, k = 2)
-        
-        good = []
-        for m, n in matches:
-            if m.distance < 0.9 * n.distance :
-                good.append([m])
-                
-        return len(good)
-    except cv2.error as e:
-        print('Error: %s' %(e))
+        alg = cv2.KAZE_create()
+        keypoints = alg.detect(image)
+        keypoints = sorted(keypoints, key = lambda x: -x.response)[0:vectorSize]
+        keypoints, descriptors = alg.compute(image, keypoints)
+        descriptors = descriptors.flatten()
+        dscsize = vectorSize * 64
+        if descriptors.size < dscsize:
+            descriptors = np.concatenate([descriptors, np.zeros(dscsize - descriptors.size)])
+        elif descriptors.size > dscsize:
+            descriptors = descriptors[0:dscsize]
+    except cv2.error as e::
+        print 'Error while extracting image: ', e
+        return None
+    return descriptors
+
+def generatePickleFromBatch(pckPath, imgsPath):
+    files = [os.path.join(imgsPath, p) for p in sorted(os.listdir(imgsPath))]
+
+    result = {}
+    for f in files:
+        print('Extracting features from image %s' %(f))
+        name = f.split('/')[-1].lower()
+        result[name] = extractFeatures(f)
+
+    # saving all our feature vectors in pickled file
+    with open(pckPath, 'w') as fp:
+        pickle.dump(result, fp)
+
