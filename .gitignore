@@ -1,3 +1,8 @@
 PINS
+<<<<<<< HEAD
 detimg.py
 
+=======
+__pycache__
+facerecognition.ipynb
+>>>>>>> a3d93a4fb00c835157f6c562953450d594b5d2d3
