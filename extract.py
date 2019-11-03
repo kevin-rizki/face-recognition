@@ -2,18 +2,14 @@
 import cv2
 import numpy as np
 import scipy
-<<<<<<< HEAD
-from scipy.misc import imread
-import cPickle as pickle
+import pickle
 import random
-=======
->>>>>>> a3d93a4fb00c835157f6c562953450d594b5d2d3
 import os
 import matplotlib.pyplot as plt
 
 def extractFeatures(imgPath, vectorSize = 32):
     # Get image data from P A T H
-    image = imread(imgPath, mode = "RGB")
+    image = cv2.imread(imgPath)
     descriptors = None
     # Extract 
     try:
@@ -21,32 +17,33 @@ def extractFeatures(imgPath, vectorSize = 32):
         keypoints = alg.detect(image)
         keypoints = sorted(keypoints, key = lambda x: -x.response)[0:vectorSize]
         keypoints, descriptors = alg.compute(image, keypoints)
+        #keypoints, descriptors = alg.detectAndCompute(imgPath, None)
         descriptors = descriptors.flatten()
         dscsize = vectorSize * 64
+
         if descriptors.size < dscsize:
             descriptors = np.concatenate([descriptors, np.zeros(dscsize - descriptors.size)])
         elif descriptors.size > dscsize:
             descriptors = descriptors[0:dscsize]
-    except cv2.error as e::
-        print 'Error while extracting image: ', e
+    except cv2.error as e:
+        print ('Error while extracting image: ', e)
         return None
     return descriptors
 
 def generatePickleFromBatch(pckPath, imgsPath):
     files = [os.path.join(imgsPath, p) for p in sorted(os.listdir(imgsPath))]
 
-<<<<<<< HEAD
     result = {}
     for f in files:
         print('Extracting features from image %s' %(f))
         name = f.split('/')[-1].lower()
-        result[name] = extractFeatures(f)
+        result[name] = dict()
+        result[name]["path"] = f
+        result[name]["desc"] = extractFeatures(f)
 
     # saving all our feature vectors in pickled file
-    with open(pckPath, 'w') as fp:
+    with open(pckPath, 'ab') as fp:
         pickle.dump(result, fp)
-
-=======
 # Image path generator
         
 def VectorSize(vec):
@@ -55,14 +52,6 @@ def VectorSize(vec):
         sum = sum + vec[i] * vec[i]
     return sum**(1/2.0)
 
-def DotProduct(vector_1, vector_2):
-    for i in range (len(vector_1)):
-        for j in range(len(vector_1[0])):
-            print('yes')
-
-def ImagePath(imgdir):
-    temp = './PINS/pins_Aaron Paul/%s' %(imgdir)
-    return temp
 
 # Image Matcher
 def ImageMatcher(img_path1, img_path2):
@@ -98,5 +87,3 @@ def ImageMatcher(img_path1, img_path2):
         print('Error: %s' %(e))
         
 # print(ImageMatcher('./Justin_Bieber_2010_3.jpg', './Justin_Bieber_2010_3.jpg')[0])
-    
->>>>>>> a3d93a4fb00c835157f6c562953450d594b5d2d3
