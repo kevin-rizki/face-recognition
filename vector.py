@@ -2,10 +2,10 @@ import numpy as np
 import math
 
 def normalize(v):
-    n = np.linalg.rorm(v)
+    n = np.linalg.norm(v)
     if n == 0:
         return v
-    return v / norm
+    return v / n
 
 def calcEuclideanDistance(vIn, vComp):
     a = normalize(vIn)
