@@ -8,12 +8,12 @@ def normalize(v):
     return v / n
 
 def calcEuclideanDistance(vIn, vComp):
-    a = normalize(vIn)
-    b = normalize(vComp)
+    a = vIn
+    b = vComp
     s = 0
     for i in range(a.size):
         s += (a[i] - b[i]) ** 2
-    return math.sqrt(s)
+    return 1 / (1 + math.sqrt(s))
 
 def calcCosineSimilarity(vIn, vComp):
     a = normalize(vIn)
