@@ -1,3 +1,5 @@
 PINS
+db
 __pycache__
 facerecognition.ipynb
+*.db

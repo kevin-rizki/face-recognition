@@ -1,4 +1,5 @@
 import tkinter
+from tkinter import filedialog
 from extract import *
 
 from matplotlib.backends.backend_tkagg import (
@@ -16,7 +17,11 @@ window.wm_title("Embedding in Tk")
 window.geometry('1000x750')
 
 # Images
-img = mpimg.imread('./Justin_Bieber_2010_3.jpg')
+window.filename = filedialog.askopenfilename(initialdir = "./", title = "Select file",filetypes = (("jpeg files","*.jpg"), ("all files", ".")))
+
+img = mpimg.imread(window.filename)
+
+# img = mpimg.imread('./Justin_Bieber_2010_3.jpg')
 
 fig = plt.figure(figsize=(8,5) ,dpi=100)
 # Subplot 1st row 2nd col
@@ -44,9 +49,9 @@ canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
 
-# def on_key_press(event):
-#     print("you pressed {}".format(event.key))
-#     key_press_handler(event, canvas, toolbar)
+def on_key_press(event):
+    print("you pressed {}".format(event.key))
+    key_press_handler(event, canvas, toolbar)
 
 
 canvas.mpl_connect("key_press_event", on_key_press)
