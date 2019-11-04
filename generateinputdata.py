@@ -1,12 +1,12 @@
 # Program memisahkan sample input 20% dari folder asal
 # Nama file: generateinputdata.py
-# Letakkan folder PINS tepat satu directory di atas directory file ini
+# Letakkan folder PINS dalam directory file ini
 import os
 from shutil import copyfile
 
 # Mengenerate nama folder
-for folderName in os.listdir("../PINS"):
-    folderDir = os.path.join("../PINS",folderName)
+for folderName in os.listdir("./PINS"):
+    folderDir = os.path.join("./PINS",folderName)
     
     # Menghitung jumlah file dalam folder
     path, dirs, files = next(os.walk(folderDir))
