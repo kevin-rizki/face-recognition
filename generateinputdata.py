@@ -26,9 +26,10 @@ for folderName in os.listdir("./PINS"):
 
         # Membuat directory untuk Referensi
         if (counter % 2 == 0) and (number_test_data < tresshold):
-            newDir = os.path.join("../TestData",folderName)
+            newDir = os.path.join("TestData",folderName)
+            number_test_data += 1
         else:    
-            newDir = os.path.join("../Reference",folderName)
+            newDir = os.path.join("Reference",folderName)
     
         if not os.path.exists(newDir):
             os.makedirs(newDir)

@@ -6,16 +6,17 @@ from vector import *
 
 dbfile = open("pins.db", "rb")
 db = pickle.load(dbfile)
-print(db)
+#print(db)
 sim = 0
 name = "Not found"
-dsc = extractFeatures("PINS/pins_Aaron Paul/Aaron Paul130_215.jpg")
+dsc = extractFeatures("TestData/pins_Alvaro Morte/Alvaro Morte172_868.jpg")
 for e in db:
     k = db[e]
     x = calcCosineSimilarity(dsc, k)
-    print(x, e)
+    print(x, e, end = '          ')
     if x > sim:
         sim  = x
         name = e
+    print('\r', end= '  ')
 
 print("Match with:", name, "(", sim, ")")

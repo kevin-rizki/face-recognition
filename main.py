@@ -116,9 +116,9 @@ class PageOne(tk.Frame):
         plt.close(fig)
         
         
-        
-app = SeaofBTCapp()
-app.geometry("1280x720")
-app.mainloop()
+if __name__ == '__main__':        
+    app = SeaofBTCapp()
+    app.geometry("1280x720")
+    app.mainloop()
         
         

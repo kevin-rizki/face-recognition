@@ -15,9 +15,11 @@ def generatePickleFromBatch(pckPath, imgsPath):
         db[f] = extractFeatures(f)
         extracted += 1
         print('\r', end='')
-
-    with open(pckPath, 'ab') as fp:
-        pickle.dump(db, fp)
+    #if os.path.exists(pckPath):
+    #    os.remove(pckPath)
+    with open(pckPath, 'wb') as dbfile:
+        pickle.dump(db, dbfile)
+        dbfile.close()
     print('Done.')
 
 def generateDB(dbPath, pinsPath):
@@ -36,7 +38,7 @@ def generateDB(dbPath, pinsPath):
             db = os.path.join(dbPath, person.split('/')[-1])
             print('[' + str(generated) + '/' +  str(count) + ']', 'Generating', db + '.db')
             generatePickleFromBatch(db + '.db', person)
-        print('Extracted', count, 'entries on PINS.')
+        print('Extracted', count, 'entries.')
 
     else:
         print('Directory  not found')
@@ -52,11 +54,14 @@ def joinDB(dirPath, dbPath):
             with open(f, 'rb') as tempdb:
                 a = pickle.load(tempdb)
                 db.update(a)
-        with open(dbPath, 'ab') as dbfile:
+        #os.remove(dbPath)
+        with open(dbPath, 'wb') as dbfile:
             pickle.dump(db, dbfile)
+            dbfile.close()
         print('Done.')
     else:
         print('Directory not found')
 if __name__ == '__main__':
-    #generateDB('db', 'PINS')
+    #generateDB('db', 'Reference')
     joinDB('db', 'pins.db')
+    #os.remove('pins.db')

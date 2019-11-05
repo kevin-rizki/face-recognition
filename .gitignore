@@ -3,3 +3,5 @@ db
 __pycache__
 facerecognition.ipynb
 *.db
+Reference
+TestData
