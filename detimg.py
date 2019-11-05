@@ -12,7 +12,7 @@ name = "Not found"
 dsc = extractFeatures("PINS/pins_Aaron Paul/Aaron Paul130_215.jpg")
 for e in db:
     k = db[e]
-    x = calcCosineSimilarity(dsc, k["desc"])
+    x = calcCosineSimilarity(dsc, k)
     print(x, e)
     if x > sim:
         sim  = x

@@ -34,8 +34,8 @@ def generateDB(dbPath, pinsPath):
         for person in persons:
             generated += 1
             db = os.path.join(dbPath, person.split('/')[-1])
-            print('[' + str(generated) + '/' +  str(count) + ']', 'Generating', db)
-            generatePickleFromBatch(db, person)
+            print('[' + str(generated) + '/' +  str(count) + ']', 'Generating', db + '.db')
+            generatePickleFromBatch(db + '.db', person)
         print('Extracted', count, 'entries on PINS.')
 
     else:
@@ -58,5 +58,5 @@ def joinDB(dirPath, dbPath):
     else:
         print('Directory not found')
 if __name__ == '__main__':
-    generateDB('db', 'PINS')
+    #generateDB('db', 'PINS')
     joinDB('db', 'pins.db')
