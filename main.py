@@ -169,7 +169,7 @@ class PageOne(tk.Frame):
         print(image_path)
         
 if __name__ == '__main__':        
-    app = SeaofBTCapp()
+    app = Window()
     app.geometry("1280x720")
     app.mainloop()
         
