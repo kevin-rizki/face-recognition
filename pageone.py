@@ -118,6 +118,7 @@ class PageOne(Frame):
             dbfile = open('pins.db', 'rb')
             db = pickle.load(dbfile)
         else:
+            self.buttons.pack_forget()
             self.msg.set('pins.db not found. Please run generate-pickle-file.py to generate it.')
 
     def matchs(self , use_cs):

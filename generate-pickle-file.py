@@ -1,6 +1,7 @@
 from extract import *
 import os
 import pickle
+import sys
 
 def generatePickleFromBatch(pckPath, imgsPath):
     files = [os.path.join(imgsPath, p) for p in sorted(os.listdir(imgsPath))]
@@ -62,6 +63,13 @@ def joinDB(dirPath, dbPath):
     else:
         print('Directory not found')
 if __name__ == '__main__':
-    #generateDB('db', 'Reference')
-    joinDB('db', 'pins.db')
-    #os.remove('pins.db')
+    if len(sys.argv) > 1:
+        if os.path.exists(sys.argv[1]):
+            generateDB('db', sys.argv[1])
+            joinDB('db', 'pins.db')
+        else:
+            print('Fatal: not a directory')
+    else:
+        print('Please specify a file. It must contains folders which contains pictures.')
+        print('Usage: python3 generate-pickle-file.py <folder-name>')
+
