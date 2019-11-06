@@ -1,41 +1,46 @@
-from tkinter import filedialog
-from tkinter import ttk
-import tkinter as tk
 from tkinter import  *
+from tkinter import ttk, filedialog
 from PIL import ImageTk, Image
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
+from vector import *
+from extract import *
 
 LARGE_FONT = ("Verdana", 16)
 
 image_path = "test"
+db_path = 'pins.db'
+db = None
 #fig = plt.figure(figsize=(8,5) ,dpi=100)
 
-class SeaofBTCapp(tk.Tk):
+class MainApp(Tk):
     currentFrame = None
 
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+        global db_path
+
+        Tk.__init__(self, *args, **kwargs)
         
-        tk.Tk.wm_title(self, "KetokMagicHalal")
-        container = tk.Frame(self)
+        Tk.wm_title(self, "KetokMagicHalal")
+        container = Frame(self)
         container.pack(side="top", fill="both", expand = True) 
         
-        container.grid_rowconfigure(0, weight = 1)
-        container.grid_columnconfigure(0, weight = 1)
+        #container.grid_rowconfigure(0, weight = 1)
+        #container.grid_columnconfigure(0, weight = 1)
         
         self.frames = {}
-        for F in (StartPage, PageOne):
+        for F in ([PageOne]):
             frame = F(container, self)
             self.frames[F] = frame
             frame.pack_forget()
             #frame.pack(side="top", fill = "both", expand = True)
         
-        self.show_frame(StartPage)
-        
+        self.show_frame(PageOne)
+        self.currentFrame.load_db(db_path)
+
     def show_frame(self, cont):
         if self.currentFrame is not None:
             self.currentFrame.pack_forget()
@@ -43,25 +48,8 @@ class SeaofBTCapp(tk.Tk):
         self.currentFrame.pack(side=TOP, fill=BOTH, expand=True)
         
         
-class StartPage(tk.Frame):
-    def __init__(self, parent, controller):
-        global image_path
-        tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Start Page", font = LARGE_FONT)
-        label.pack(pady = 10, padx = 10)
         
-        button1 = ttk.Button(self, text="Pilih Gambar", command = lambda: self.SelectImage(controller))
-        button1.pack()
-        
-    def SelectImage(self, controller):
-        global image_path
-        upload_img = filedialog.askopenfilename(initialdir = "./", title = "Select file", filetypes =  (("jpeg files","*.jpg"),("all files","*.*")))
-        image_path = upload_img
-        controller.show_frame(PageOne)
-        print(image_path)
-        
-        
-class PageOne(tk.Frame):
+class PageOne(Frame):
     
     sub1 = None
     sub2 = None
@@ -73,22 +61,27 @@ class PageOne(tk.Frame):
     fig4 = None
     buttons = None
     canvas = None
+    msg = None
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        Frame.__init__(self, parent)
         global image_path
-        #label = ttk.Label(self, text="Page One", font = LARGE_FONT)
-        #label.pack(pady = 10, padx = 10)
+        label = ttk.Label(self, text="Ketok Magic Halal", font = LARGE_FONT)
+        label.pack(pady = 10, padx = 10)
             
             # def on_key_press(event):
             #     print("you pressed {}".format(event.key))
             #     key_press_handler(event, canvas, toolbar)
         
-        self.buttons = tk.Frame(self)
+        self.buttons = Frame(self)
         self.buttons.pack(side = BOTTOM, expand = True, fill = BOTH)
+        
+        self.msg = StringVar()
+        ttk.Label(self, textvariable=self.msg).pack(side = BOTTOM)
+        self.msg.set('Welcome')
 
-        self.canvas = tk.Canvas(self, width=1280, height=600)
-        self.canvas.pack(side = TOP, expand = True, fill = tk.BOTH)
+        self.canvas = Canvas(self, width=1280, height=600, borderwidth=4)
+        self.canvas.pack(side = TOP, expand = True, fill = BOTH)
         
         button0 = ttk.Button(self.buttons, text="Pilih Gambar", command = lambda: self.SelectImage(controller))
         button0.pack(side = LEFT)
@@ -96,13 +89,11 @@ class PageOne(tk.Frame):
         button1 = ttk.Button(self.buttons, text="Update", command = lambda: self.draw_image())
         button1.pack(side = LEFT)
         
-        button2 = ttk.Button(self.buttons, text="Match", command = lambda: controller.show_frame(StartPage))
+        button2 = ttk.Button(self.buttons, text="Match", command = lambda: self.matchs())
         button2.pack(side = LEFT)
-        
 
     def draw_image(self):
         global image_path
-        global fig
         #img = mpimg.imread(image_path)
         print(image_path)
 
@@ -157,10 +148,36 @@ class PageOne(tk.Frame):
         image_path = upload_img
         #controller.show_frame(PageOne)
         self.draw_image()
+        self.msg.set('Opened %s.' %image_path.split('/')[-1])
         print(image_path)
-        
+
+    def load_db(self, path):
+        global db
+        if os.path.exists(path):
+            dbfile = open('pins.db', 'rb')
+            db = pickle.load(dbfile)
+        else:
+            self.msg.set('pins.db not found. Please run generate-pickle-file.py to generate it.')
+
+    def matchs(self):
+        global db
+        global image_path
+        #self.buttons.pack_forget()
+        self.msg.set('Extracting %s...' %image_path.split('/')[-1])
+        sim = 0
+        name = ' '
+        dsc = extractFeatures(image_path)
+        for e in db:
+            print('\rMatching: %s' %e, end='')
+            k = db[e]
+            x = calcCosineSimilarity(dsc, k)
+            if x > sim:
+                sim = x
+                name = e
+        #self.buttons.pack()
+        self.msg.set('Match with: ' + name + ' (' + str(sim) + ') ')
 if __name__ == '__main__':        
-    app = SeaofBTCapp()
+    app = MainApp()
     app.geometry("1280x720")
     app.mainloop()
         
