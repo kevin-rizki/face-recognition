@@ -1,8 +1,13 @@
 import numpy as np
 import math
 
+def get_length(v):
+    n = 0
+    for i in range(v.size):
+        n += v[i] * v[i]
+    return math.sqrt(n)
 def normalize(v):
-    n = np.linalg.norm(v)
+    n = get_length(v)
     if n == 0:
         return v
     return v / n

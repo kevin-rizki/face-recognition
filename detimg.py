@@ -12,7 +12,7 @@ name = "Not found"
 dsc = extractFeatures("TestData/pins_Alvaro Morte/Alvaro Morte172_868.jpg")
 for e in db:
     k = db[e]
-    x = calcCosineSimilarity(dsc, k)
+    x = calcEuclideanDistance(dsc, k)
     print(x, e, end = '          ')
     if x > sim:
         sim  = x
