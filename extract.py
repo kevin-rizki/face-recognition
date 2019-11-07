@@ -17,7 +17,7 @@ def extractFeatures(imgPath, vectorSize = 32):
         keypoints = alg.detect(image)
         keypoints = sorted(keypoints, key = lambda x: -x.response)[0:vectorSize]
         keypoints, descriptors = alg.compute(image, keypoints)
-        #keypoints, descriptors = alg.detectAndCompute(imgPath, None)
+        #keypoints, descriptors = alg.detectAndCompute(image, None)
         descriptors = descriptors.flatten()
         dscsize = vectorSize * 64
 
