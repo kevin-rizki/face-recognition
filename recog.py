@@ -4,6 +4,10 @@ import os
 
 def matchs(image_path, db, t_compare, use_cs, controller):
         # Melakukan matching dan menghasilkan 3 gambar teratas yang paling "mirip"
+        if use_cs:
+            controller.score_name = 'Similarity'
+        else:
+            controller.score_name = 'Distance'
         if image_path is not None:
             controller.hide_buttons()
             controller.msg.set('Extracting %s...' %image_path.split('/')[-1])
@@ -19,7 +23,10 @@ def matchs(image_path, db, t_compare, use_cs, controller):
                 else:
                     compared_data['x'] = calcEuclideanDistance(dsc, compared_image)
                 controller.matched_images.append(compared_data)
-                controller.matched_images = sorted(controller.matched_images, key = lambda x: -x['x'])
+                if use_cs:
+                    controller.matched_images = sorted(controller.matched_images, key = lambda x: -x['x'])
+                else:
+                    controller.matched_images = sorted(controller.matched_images, key = lambda x: x['x']) 
                 if len(controller.matched_images) > t_compare:
                     controller.matched_images = controller.matched_images[0:t_compare]
         

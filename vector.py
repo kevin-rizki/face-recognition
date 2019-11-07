@@ -18,7 +18,7 @@ def calcEuclideanDistance(vIn, vComp):
     s = 0
     for i in range(a.size):
         s += (a[i] - b[i]) ** 2
-    return 1 / (1 + math.sqrt(s))
+    return math.sqrt(s)
 
 def calcCosineSimilarity(vIn, vComp):
     a = normalize(vIn)

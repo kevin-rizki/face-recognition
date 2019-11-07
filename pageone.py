@@ -34,6 +34,7 @@ class PageOne(Frame):
     mainframe = None
 
     scroll = 0
+    score_name = 'Score'
 
     def __init__(self, parent, controller):
         # Menginisiasi frame
@@ -101,11 +102,11 @@ class PageOne(Frame):
             self.disp_images[i]['img'] = ImageTk.PhotoImage(Image.open(self.matched_images[i]['path']).resize((100, 100), Image.ANTIALIAS))
             if not ('fig' in self.disp_images[i].keys()):
                 self.disp_images[i]['fig'] = self.rcanvas.create_image(20, 20 + 120 * i, anchor = NW, image = self.disp_images[i]['img'])
-                self.disp_images[i]['str'] = '#' + str(i + 1) + '\nPath : ' + self.matched_images[i]['path'] + '\nSimilarity : ' + str(self.matched_images[i]['x'])
+                self.disp_images[i]['str'] = '#' + str(i + 1) + '\nPath : ' + self.matched_images[i]['path'] + '\n' + self.score_name + ' : ' + str(self.matched_images[i]['x'])
                 self.disp_images[i]['text'] = self.rcanvas.create_text(140, 20 + 120 * i, anchor = NW, text = self.disp_images[i]['str'])
             else:
                 self.rcanvas.itemconfig(self.disp_images[i]['fig'], image = self.disp_images[i]['img'])
-                self.disp_images[i]['str'] = '#' + str(i + 1) + '\nPath : ' + self.matched_images[i]['path'] + '\nSimilarity : ' + str(self.matched_images[i]['x'])
+                self.disp_images[i]['str'] = '#' + str(i + 1) + '\nPath : ' + self.matched_images[i]['path'] + '\n' + self.score_name + ' : ' + str(self.matched_images[i]['x'])
                 self.rcanvas.itemconfig(self.disp_images[i]['text'], text = self.disp_images[i]['str'])
 
     def update_scroll(self, ds):
